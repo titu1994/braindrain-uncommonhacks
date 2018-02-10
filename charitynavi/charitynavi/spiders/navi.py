@@ -24,6 +24,16 @@ class CharityNavigatorSpider(scrapy.Spider):
         charity_name = response.xpath('//h1[contains(@class, "charityname")]/text()').extract_first()
         charity_name = charity_name.replace('\n', '').strip()
 
+        p_tags = response.xpath('//p/text()').extract()
+        address_line1 = unicodedata.normalize('NFKD', p_tags[3]).strip()
+        address_line2 = unicodedata.normalize('NFKD', p_tags[4]).strip()
+
+        if 'tel:' in address_line2:
+            phone = address_line2.replace("tel:", "").strip()
+            address_line2 = ""
+        else:
+            phone = unicodedata.normalize('NFKD', p_tags[5]).replace("tel:", "").strip()
+
         description = response.xpath('//h2[contains(@class, "tagline")]/text()').extract_first()
         if description is not None and len(description) != 0:
             description = description.strip()
@@ -54,6 +64,9 @@ class CharityNavigatorSpider(scrapy.Spider):
 
         yield {
             'charity_name': charity_name,
+            'address_line1': address_line1,
+            'address_line2': address_line2,
+            'phone': phone,
             'description': description,
             'overall_rating': overall_rating,
             'financial_rating': financial_rating,
