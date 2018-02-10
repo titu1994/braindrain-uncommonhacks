@@ -1,0 +1,1 @@
+scrapy crawl charitynav -o charaty_data.json

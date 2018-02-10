@@ -5,60 +5,58 @@ class CharityNavigatorSpider(scrapy.Spider):
     name = 'charitynav'
 
     def start_requests(self):
-        baseurl = 'https://www.yelp.com/biz/'
-        for name in all_restaurant_names:
-            path = name.lower().split()  # get actual words of the restaurant name
-            path = '-'.join(path)  # join wiht - as required
-            url = path + '-chicago'  # append chicago to enforce searching for business in chicago only
+        baseurl = 'https://www.charitynavigator.org/index.cfm?FromRec=%d&keyword_list=&bay=search.results&EIN=&cgid=&cuid=&location=2&state=IL&city=&overallrtg=&size=&scopeid=&ratingstatus=rated'
 
-            yield scrapy.Request(baseurl + url, callback=self.parse)
+        for i in range(0, 325, 20):
+            yield scrapy.Request(baseurl % i, callback=self.go_to_charity)
 
-    def parse(self, response):
-        restaurant = response.url[25:].split('-')
-        restaurant_name = ' '.join(restaurant[:-1])
-
+    def go_to_charity(self, response):
         response.selector.remove_namespaces()
 
-        ratings = response.xpath('//div[contains(@class, "i-stars")]/@title').extract()
-        reviews_ = response.xpath("//p[contains(@lang, 'en')]").extract()
+        charity_links = response.xpath('//h3[contains(@class, "charity-name-desktop")]/a/@href').extract()
 
-        self.logger.info("Restaurant Name" + restaurant_name + ": Number of ratings = " + str(len(ratings)))
+        for link in charity_links:
+            yield response.follow(link, callback=self.parse_charity)
 
-        for i, (rating, review_para) in enumerate(zip(ratings, reviews_)):
-            # clean rating
-            rating = int(rating[0])
+    def parse_charity(self, response):
+        response.selector.remove_namespaces()
 
-            review_para = review_para[13:-4]  # remove the <p > </p> parts
-            review_para = review_para.replace('<br>', '')  # replace new lines and breaks
+        charity_name = response.xpath('//h1[contains(@class, "charityname")]/text()').extract_first()
+        charity_name = charity_name.replace('\n', '').strip()
 
-            # Ref: https://stackoverflow.com/questions/10993612/python-removing-xa0-from-string
-            review = unicodedata.normalize('NFKD', review_para)
+        description = response.xpath('//h2[contains(@class, "tagline")]/text()').extract_first()
+        if description is not None and len(description) != 0:
+            description = description.strip()
+        else:
+            description = ""
 
-            item = {
-                'restaurant_name': restaurant_name,
-                'review': review,
-                'rating': rating
-            }
-            yield item
+        ratings_ = response.xpath('//td[contains(@align, "center")]/text()').extract()
+        try:
+            overall_rating = float(ratings_[0])
+        except:
+            overall_rating = -1
 
-        current_page = response.xpath("//div[contains(@class, 'page-of-pages')]/text()").extract_first()
+        try:
+            financial_rating = float(ratings_[1])
+        except:
+            financial_rating = -1
 
-        if current_page is not None:
-            current_page = current_page.replace('\n', '').strip().split()
-            current_idx = int(current_page[1])
-            total_idx = int(current_page[-1])
+        try:
+            transparency_rating = float(ratings_[2])
+        except:
+            transparency_rating = -1
 
-            if current_idx + 1 <= total_idx:
-                start_count = 20 * (current_idx + 1)
+        mission_statement = response.xpath('//div[contains(@class, "accordion-item-bd")]/p/text()').extract_first()
+        if mission_statement is not None and len(mission_statement) != 0:
+            mission_statement = mission_statement.strip()
+        else:
+            mission_statement = ""
 
-                baseurl = response.url[:25]
-                name = restaurant_name.split()
-                name = '-'.join(name)
-                name = name + '-chicago?start=%d' % start_count
-                url = baseurl + name
-
-                message = 'restaurant = ' + restaurant_name + ' | following next page to ' + url
-                self.logger.info(message)
-
-                if url is not None:
-                    yield scrapy.Request(url, callback=self.parse)
+        yield {
+            'charity_name': charity_name,
+            'description': description,
+            'overall_rating': overall_rating,
+            'financial_rating': financial_rating,
+            'transparency_rating': transparency_rating,
+            'mission_statement': mission_statement,
+        }
