@@ -78,6 +78,13 @@ app.post('/createcharity', function(req, res){
     });
 });
 
-var server = app.listen(3000, function(){
-    console.log("Started server on port 3000..");
-})
+//Load HTTP module
+var http = require("http");
+
+//Create HTTP server and listen on port 8000 for requests
+http.createServer(function (request, response) {
+
+   // Set the response HTTP header with HTTP status and Content type
+   response.writeHead(200, {'Content-Type': 'text/plain'});
+   
+}).listen(theport);
