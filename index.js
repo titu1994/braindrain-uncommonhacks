@@ -8,7 +8,16 @@ Charity = require("./models/charity.js")
 var mongoose = require('mongoose')
 mongoose.Promise = global.Promise;
 
-mongoose.connect("mongodb://localhost:27017/charityDB", function(err){
+var uristring =
+    process.env.MONGOLAB_URI ||
+    process.env.MONGOHQ_URL ||
+    'mongodb://localhost/HelloMongoose';
+
+    // The http server will listen to an appropriate port, or default to
+// port 5000.
+var theport = process.env.PORT || 5000;
+
+mongoose.connect(uristring, function(err){
     if(err){
         throw err;
     }
