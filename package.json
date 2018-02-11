@@ -4,6 +4,7 @@
   "description": "API for charity portal made for UncommonHacks",
   "main": "index.js",
   "scripts": {
+    "start":"node index.js",
     "test": "testcharity"
   },
   "repository": {
