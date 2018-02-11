@@ -11,7 +11,7 @@ mongoose.Promise = global.Promise;
 var uristring =
     process.env.MONGOLAB_URI ||
     process.env.MONGOHQ_URL ||
-    'mongodb://localhost/HelloMongoose';
+    'mongodb://dkaush4:qwerty123@ds231758.mlab.com:31758/charitydb';
 
     // The http server will listen to an appropriate port, or default to
 // port 5000.
@@ -27,7 +27,6 @@ mongoose.connect(uristring, function(err){
 });
 var db = mongoose.connection;
 
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -36,8 +35,6 @@ app.get("/", function (req, res){
     console.log("Here");
 });
 
-
-
 //USER Endpoints.
 //GET
 app.get('/getuser/:id', function(req, res){
@@ -45,7 +42,7 @@ app.get('/getuser/:id', function(req, res){
         if(err){
             throw err;
         }
-        res.json(user)
+        res.status(200).json(user)
     });
 });
 //CREATE USER
@@ -55,14 +52,12 @@ app.post('/createuser', function(req, res){
         if(err){
             throw err;
         }
-        res.json(user);
+        res.status(200).json(user);
     });
 });
 // app.post('/login', function(req, res){
     
 // });
-
-
 
 //Charity 
 app.get('/getcharity/:id', function(req,res){
@@ -70,7 +65,7 @@ app.get('/getcharity/:id', function(req,res){
         if(err){
             throw err;
         }
-        res.json(charity)
+        res.status(200).json(charity)
     });
 });
 app.post('/createcharity', function(req, res){
@@ -79,7 +74,7 @@ app.post('/createcharity', function(req, res){
         if (err){
             throw err;
         }
-        res.json(charity);
+        res.status(200).json(charity);
     });
 });
 
