@@ -1,0 +1,34 @@
+{
+  "name": "charityapi",
+  "version": "1.0.0",
+  "description": "API for charity portal made for UncommonHacks",
+  "main": "index.js",
+  "scripts": {
+    "test": "testcharity"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/titu1994/braindrain-uncommonhacks.git"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "api",
+    "rest"
+  ],
+  "author": "Debojit Kaushik",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/titu1994/braindrain-uncommonhacks/issues"
+  },
+  "homepage": "https://github.com/titu1994/braindrain-uncommonhacks#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "jsonwebtoken": "^8.1.1",
+    "mongodb": "^3.0.2",
+    "mongoose": "^5.0.4",
+    "node": "^9.5.0"
+  },
+  "devDependencies": {}
+}
