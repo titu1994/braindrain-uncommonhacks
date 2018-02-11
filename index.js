@@ -8,21 +8,18 @@ Charity = require("./models/charity.js")
 var mongoose = require('mongoose')
 mongoose.Promise = global.Promise;
 
-var uristring =
-    process.env.MONGOLAB_URI ||
-    process.env.MONGOHQ_URL ||
-    "mongodb://dkaush4:qwerty123@ds231568.mlab.com:31568/charitydb";
-
+// var uristring = "mongodb://localhost:27017/charityDB";
+var uristring = "mongodb://dkaush4:qwerty123@ds231568.mlab.com:31568/charitydb"
     // The http server will listen to an appropriate port, or default to
 // port 5000.
-var theport = process.env.PORT || 5000;
+var port = process.env.PORT || 8080;
 
 mongoose.connect(uristring, function(err){
     if(err){
         throw err;
     }
     else{
-        console.log("Successfully connected to DB..")
+        console.log("Successfully connected to DB.." + uristring.toString())
     }
 });
 var db = mongoose.connection;
@@ -31,8 +28,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", function (req, res){
-    res.status(200).send("First endpoint here. Hit another endpoint to get data.")
-    console.log("Here");
+    res.status(200).send("First endpoint here. Hit another endpoint to get data.");
 });
 
 //USER Endpoints.
@@ -78,13 +74,7 @@ app.post('/createcharity', function(req, res){
     });
 });
 
-//Load HTTP module
-var http = require("http");
 
-//Create HTTP server and listen on port 8000 for requests
-http.createServer(function (request, response) {
-
-   // Set the response HTTP header with HTTP status and Content type
-   response.writeHead(200, {'Content-Type': 'text/plain'});
-   
-}).listen(theport);
+var server = app.listen(port, function(){
+    console.log("Started server..." + port.toString());
+});

@@ -23,7 +23,6 @@ var userSchema = new Schema({
     ],
     email:{
         type: String,
-        unique: true, 
         required: true
     },
     password: String
@@ -42,7 +41,11 @@ userSchema.methods.validateLogin = function (password){
     }
 }
 module.exports.createuser = function(user, callback){
-    User.create(user, callback);
+    try{
+        User.create(user, callback);
+    } catch (ex){
+        console.log(ex);
+    }
 };
 
 module.exports.getuserbyid = function(id, callback){

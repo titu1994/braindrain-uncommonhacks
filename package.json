@@ -4,7 +4,7 @@
   "description": "API for charity portal made for UncommonHacks",
   "main": "index.js",
   "scripts": {
-    "start":"node index.js",
+    "start": "node index.js",
     "test": "testcharity"
   },
   "repository": {
@@ -29,7 +29,8 @@
     "jsonwebtoken": "^8.1.1",
     "mongodb": "^3.0.2",
     "mongoose": "^5.0.4",
-    "node": "^9.5.0"
+    "node": "^9.5.0",
+    "package.json": "^2.0.1"
   },
   "devDependencies": {}
 }
