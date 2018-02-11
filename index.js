@@ -11,7 +11,7 @@ mongoose.Promise = global.Promise;
 var uristring =
     process.env.MONGOLAB_URI ||
     process.env.MONGOHQ_URL ||
-    'mongodb://dkaush4:qwerty123@ds231758.mlab.com:31758/charitydb';
+    "mongodb://dkaush4:qwerty123@ds231568.mlab.com:31568/charitydb";
 
     // The http server will listen to an appropriate port, or default to
 // port 5000.
